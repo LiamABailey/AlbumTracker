@@ -1,7 +1,7 @@
-module LearnDocker
+module AlbumData
 
 go 1.16
 
-replace github.com/LiamABailey/LearnDocker/pkg/apidockertest => ./pkg/apidockertest
+replace github.com/LiamABailey/AlbumTracker/pkg/albumdata => ./pkg/albumdata
 
-require github.com/LiamABailey/LearnDocker/pkg/apidockertest v0.0.0-00010101000000-000000000000
+require github.com/LiamABailey/AlbumTracker/pkg/albumdata v0.0.0-00010101000000-000000000000
