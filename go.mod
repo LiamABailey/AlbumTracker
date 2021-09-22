@@ -1,4 +1,4 @@
-module AlbumData
+module albumtrack
 
 go 1.16
 

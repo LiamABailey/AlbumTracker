@@ -1,16 +1,18 @@
-package albumtrack
+package albumdata
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 
 // master query struct
 type AlbumQuery struct {
-  // fields defining the search
-  // name LIKE
-  // genre (in list)
-  // date criteria (added before date, added on or after date)
-  // band name (in list)
-  // return up to X results or pagination
+  AlbumName string `json:"AlbumName"`
+	NameExactMatch bool `json:"NameIsExact"`
+	Genres []string `json:"Genres"`
+	YearStart int `json:"YearStart"`
+	YearEnd int `json:"YearEnd"`
+	DateAddedStart time.Time `json:"DateAddedStart"`
+	DateAddedEnd time.Time `json:"DateAddedStart"`
+	MaxResults int `json:"MaxResults"`
 }

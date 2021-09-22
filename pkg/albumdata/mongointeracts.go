@@ -2,8 +2,8 @@ package albumdata
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	//"go.mongodb.org/mongo-driver/bson"
+	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
@@ -33,6 +33,15 @@ func NewMongoConnect() (*MongoConnect, error) {
 // Disconnect the mongo client
 func (M *MongoConnect) DisconnectMongoClient() error {
 	err := M.Client.Disconnect(context.TODO())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (M *MongoConnect) AddAlbum(a AlbumWritable) error {
+	coll := M.getCollection()
+	_, err := coll.InsertOne(context.TODO(), a)
 	if err != nil {
 		return err
 	}

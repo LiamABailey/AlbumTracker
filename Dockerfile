@@ -5,7 +5,7 @@ COPY go.sum ./
 COPY pkg ./pkg
 COPY cmd ./cmd
 
-WORKDIR ./pkg/apidockertest
+WORKDIR ./pkg/albumdata
 RUN go mod download
 WORKDIR ../../cmd
 RUN go build

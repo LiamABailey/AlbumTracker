@@ -2,8 +2,8 @@ version: "3.8"
 services:
     mongodb:
       image: mongo
-      container_name: mongodb
-      hostname: mongodb
+      container_name: albummongodb
+      hostname: albummongodb
       environment:
        - PUID=111
        - PGID=111
@@ -16,19 +16,19 @@ services:
        - api-net
 
     testapi:
-      image: go-test
-      container_name: go-test-1
-      hostname: gotest1
+      image: albumapi
+      container_name: albumtrack
+      hostname: albumtrack
       ports:
         - 8080:8080
       depends_on:
-       - mongodb
+       - albummongodb
       networks:
         - api-net
       environment:
-        - MONGOCONN=mongodb://mongodb:27017
-        - MONGODB=food
-        - MONGOCOLLECTION=fruits
+        - MONGOCONN=mongodb://albummongodb:27017
+        - MONGODB=music
+        - MONGOCOLLECTION=albums
 
 networks:
   api-net:
