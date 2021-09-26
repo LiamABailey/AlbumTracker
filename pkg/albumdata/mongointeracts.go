@@ -2,8 +2,8 @@ package albumdata
 
 import (
 	"context"
-	//"go.mongodb.org/mongo-driver/bson"
-	//"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
@@ -46,6 +46,14 @@ func (M *MongoConnect) AddAlbum(a AlbumWritable) error {
 		return err
 	}
 	return nil
+}
+
+func (M *MongoConnect) DeleteAlbumByID(id primitive.ObjectID) (*mongo.DeleteResult, error) {
+	// filter by the provided ID
+	filt := bson.M{"_id": id}
+	coll := M.getCollection()
+	dr, err := coll.DeleteOne(context.TODO(), filt)
+	return dr, err
 }
 
 //TODO : mongo functions to support capabilities specified in albumtrackapi.go

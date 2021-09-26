@@ -31,7 +31,6 @@ type AlbumReadable struct {
 	Year		int `bson:"Year" json:"Year"`
 }
 
-
 func (f AlbumReadable) Copy() AlbumReadable {
 	return AlbumReadable{f.ID, f.DateAdded, f.Name, f.Band, f.Genre, f.Year}
 }
