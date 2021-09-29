@@ -56,6 +56,36 @@ func (M *MongoConnect) DeleteAlbumByID(id primitive.ObjectID) (*mongo.DeleteResu
 	return dr, err
 }
 
+func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
+	//build the query as a filter via bson.M using various operators - $gt,  $or, $and
+	if q.AlbumName != "" {
+		// defaults to true
+		if q.NameExactMatch {
+
+		}
+	}
+	if len(q.Genres) != 0 {
+
+	}
+	if q.YearStart != 0 {
+
+	}
+	if q.YearEnd != 0 {
+
+	}
+	if q.DateAddedStart.IsZero() {
+
+	}
+	if q.DateAddedEnd.IsZero() {
+
+	}
+	if q.MaxResults != 0 {
+
+	}
+
+	coll := M.getCollection()
+}
+
 //TODO : mongo functions to support capabilities specified in albumtrackapi.go
 
 // connector to collections

@@ -15,6 +15,7 @@ func NewAPIServer(mc *MongoConnect) *APIServer {
 	svr := &APIServer{connector: mc}
 	svr.router = gin.Default()
 	svr.router.POST("/albums",svr.addAlbum)
+	svr.router.GET("/albums",srv.searchAlbums)
 	svr.router.DELETE("/albums",svr.deleteAlbumByID)
 
 	return svr
@@ -54,11 +55,21 @@ func (srv *APIServer) deleteAlbumByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dr)
 }
 
-//TODO : Need functions for the following
-//GET Album
-//GET Albums conforming to query
-//POST new album
-//Potenitailly update an album
+func (srv *APIServer) searchAlbums(ctx *gin.Context) {
+	var aquery AlbumQuery
+	if err := ctx.Bind(&aquery); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	// attempt to perform the search
+	queryres, err := srv.connector.SearchAlbums(aquery)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	// TODO: attach something to the context.
+
+}
 
 func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
