@@ -69,6 +69,18 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 			filt["Name"] = bson.M{"$regex": q.AlbumName, "$options":"i"}
 		}
 	}
+
+	if q.BandName != "" {
+		// defaults to false
+		if q.BandNameExactMatch {
+			filt["Band"] = bson.M{"$eq": q.BandName}
+		} else {
+			// queried value is in name, case invariant
+			filt["Band"] = bson.M{"$regex": q.BandName, "$options":"i"}
+		}
+	}
+
+	//todo correct Genres to properly leverage list search
 	if len(q.Genres) != 0 {
 		filt["Genre"] = bson.M{"$in": q.Genres}
 	}

@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-    mongodb:
-      image: mongo
+    db:
+      image: mongo:latest
       container_name: albummongodb
       hostname: albummongodb
       environment:
@@ -14,15 +14,14 @@ services:
       restart: unless-stopped
       networks:
        - api-net
-
-    testapi:
-      image: albumapi
+    api:
+      image: albumapi:latest
       container_name: albumtrack
       hostname: albumtrack
       ports:
         - 8080:8080
       depends_on:
-       - albummongodb
+       - db
       networks:
         - api-net
       environment:
