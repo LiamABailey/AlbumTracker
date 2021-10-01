@@ -58,32 +58,64 @@ func (M *MongoConnect) DeleteAlbumByID(id primitive.ObjectID) (*mongo.DeleteResu
 
 func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 	//build the query as a filter via bson.M using various operators - $gt,  $or, $and
+	var albums []AlbumReadable
+	filt := bson.M{}
 	if q.AlbumName != "" {
-		// defaults to true
+		// defaults to false
 		if q.NameExactMatch {
-
+			filt["Name"] = bson.M{"$eq": q.AlbumName}
+		} else {
+			// queried value is in name, case invariant
+			filt["Name"] = bson.M{"$regex": q.AlbumName, "$options":"i"}
 		}
 	}
 	if len(q.Genres) != 0 {
-
+		filt["Genre"] = bson.M{"$in": q.Genres}
 	}
+	// support Year range via two parameters
 	if q.YearStart != 0 {
-
+		filt["Year"] = bson.M{"$gte":q.YearStart}
 	}
 	if q.YearEnd != 0 {
+		if q.YearStart != 0 {
+			filt["Year"] = bson.M{"$gte":q.YearStart,"$lte":q.YearEnd}
+		} else {
+			filt["Year"] = bson.M{"$lte":q.YearEnd}
+		}
 
 	}
-	if q.DateAddedStart.IsZero() {
-
+	// support date added range via two parametersPer
+	if !(q.DateAddedStart.IsZero()) {
+		filt["DateAdded"] = bson.M{"$gte":q.DateAddedStart}
 	}
-	if q.DateAddedEnd.IsZero() {
-
+	if !(q.DateAddedEnd.IsZero()) {
+		if !(q.DateAddedStart.IsZero()) {
+			filt["DateAdded"] = bson.M{"$lte":q.DateAddedEnd,"$gte":q.DateAddedStart}
+		} else {
+			filt["DateAdded"] = bson.M{"$lte":q.DateAddedEnd}
+		}
 	}
+	// result set size is managed via SetLimit()
+	fopt := options.Find()
 	if q.MaxResults != 0 {
-
+		fopt.SetLimit(int64(q.MaxResults))
 	}
 
 	coll := M.getCollection()
+	resultcurs, err := coll.Find(context.TODO(), filt, fopt)
+	if err != nil {
+		return albums, err
+	}
+ 	defer resultcurs.Close(context.TODO())
+	// Decode each abum
+	for resultcurs.Next(context.TODO()) {
+		var album AlbumReadable
+		if err = resultcurs.Decode(&album); err == nil {
+			albums = append(albums, album.Copy())
+		}
+	}
+	return albums, err
+
 }
 
 //TODO : mongo functions to support capabilities specified in albumtrackapi.go

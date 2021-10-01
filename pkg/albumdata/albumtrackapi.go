@@ -15,9 +15,8 @@ func NewAPIServer(mc *MongoConnect) *APIServer {
 	svr := &APIServer{connector: mc}
 	svr.router = gin.Default()
 	svr.router.POST("/albums",svr.addAlbum)
-	svr.router.GET("/albums",srv.searchAlbums)
+	svr.router.GET("/albums/search",svr.searchAlbums)
 	svr.router.DELETE("/albums",svr.deleteAlbumByID)
-
 	return svr
 }
 
@@ -67,7 +66,7 @@ func (srv *APIServer) searchAlbums(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	// TODO: attach something to the context.
+	ctx.IndentedJSON(http.StatusOK, queryres)
 
 }
 
