@@ -24,6 +24,10 @@ func (srv *APIServer) Run(address string) error {
   return srv.router.Run(address)
 }
 
+func (srv *APIServer) Use(hf gin.HandlerFunc) {
+	srv.router.Use(hf)
+}
+
 func (srv *APIServer) addAlbum(ctx *gin.Context) {
 	var album AlbumWritable
 	// bind the json body into the AlbumWritable

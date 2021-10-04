@@ -1,5 +1,11 @@
 function asubmit() {
-  console.log(getBody())
+  const posturl = "http://localhost:8080/albums";
+  body = getBody();
+  console.log(getBody());
+  request = new XMLHttpRequest();
+  request.open('POST',posturl, true);
+  request.send(body);
+
 }
 
 function getBody() {
@@ -9,7 +15,7 @@ function getBody() {
       Name: albumName.value,
       Band: bandName.value,
       Genre: genre.value,
-      Year: year.value
+      Year: parseInt(year.value)
     };
     return JSON.stringify(postdata);
   } else {

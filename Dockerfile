@@ -4,6 +4,7 @@ COPY go.mod ./
 COPY go.sum ./
 COPY pkg ./pkg
 COPY cmd ./cmd
+COPY app ./app
 
 WORKDIR ./pkg/albumdata
 RUN go mod download
