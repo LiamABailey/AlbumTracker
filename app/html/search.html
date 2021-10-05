@@ -3,7 +3,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="Simple Album Tracking Utility">
+    <meta name="description" content="Simple Album Tracking Utility - Search">
     <meta name="author" content="L. Bailey">
     <!--<link rel="icon" href="../../favicon.ico">-->
 
@@ -28,10 +28,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="./">Add</a>
+              <a class="nav-link" aria-current="page" href="./">Add</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./search.html">Search</a>
+              <a class="nav-link active" href="./search.html">Search</a>
             </li>
           </ul>
         </div>
@@ -44,13 +44,19 @@
         <input type="album-name" class="form-control" id="albumName" placeholder="Enter Album Name">
       </div>
       <div class="form-group">
+        <label for = "nameExactMatch">Check for Exact Name Match</label>
+        <input type="checkbox" class="form-check-input" id ="nameExactMatch">
+      </div>
+      <div class="form-group">
         <label for = "bandName">Band Name</label>
         <input type="band-name" class="form-control" id="bandName" placeholder="Enter Band Name">
       </div>
       <div class="form-group">
-        <label for = "genre">Genre</label>
-        <select class="form-control" id="genre" data-mdb-filter="true">
-          <option value="" selected disabled>Select Genre</option>
+        <label for = "bandNameExactMatch">Check for Exact Band Name Match</label>
+        <input type="checkbox" class="form-check-input" id ="bandNameExactMatch">
+      </div>
+      <div class="form-group">
+        <select class="select" id="genre" multiple>
           <option value="Alternative Rock">Alternative Rock</option>
           <option value="Art Punk">Art Punk</option>
           <option value="Bebop">Bebop</option>
@@ -105,12 +111,25 @@
           <option value="Soul">Soul</option>
           <option value="Soundtrack">Soundtrack</option>
         </select>
+        <label for = "genre" id = "genre" class="form-label select-label">Genre</label>
       </div>
       <div class="form-group">
-        <label for = "year">Year</label>
-        <input type="year" class="form-control" id="year" placeholder="Enter Release Year">
+        <label for = "yearStart">Start Year</label>
+        <input type="yearStart" class="form-control" id="yearStart" placeholder="Enter Starting Release Year">
       </div>
-      <button type="button" class="btn btn-primary" onclick="asubmit();">Submit</button>
+      <div class="form-group">
+        <label for = "yearEnd">End Year</label>
+        <input type="yearEnd" class="form-control" id="yearEnd" placeholder="Enter Ending Release Year">
+      </div>
+      <div class="form-group">
+        <label for = "entryStart">Start Date Added</label>
+        <input type="entryStart" class="form-control" id="entryStart" placeholder="Enter Starting Date Added">
+      </div>
+      <div class="form-group">
+        <label for = "entryEnd">End Date Added</label>
+        <input type="entryEnd" class="form-control" id="entryEnd" placeholder="Enter Ending Date Added">
+      </div>
+      <button type="button" class="btn btn-primary" onclick="console.log('click');">Submit</button>
     </form>
 
 
