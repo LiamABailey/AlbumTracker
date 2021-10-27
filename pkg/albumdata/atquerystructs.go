@@ -16,5 +16,4 @@ type AlbumQuery struct {
 	YearEnd int `json:"YearEnd"`
 	DateAddedStart time.Time `json:"DateAddedStart"`
 	DateAddedEnd time.Time `json:"DateAddedStart"`
-	MaxResults int `json:"MaxResults"`
 }

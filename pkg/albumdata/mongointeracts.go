@@ -107,11 +107,6 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 			filt["DateAdded"] = bson.M{"$lte":q.DateAddedEnd}
 		}
 	}
-	// result set size is managed via SetLimit()
-	fopt := options.Find()
-	if q.MaxResults != 0 {
-		fopt.SetLimit(int64(q.MaxResults))
-	}
 
 	coll := M.getCollection()
 	resultcurs, err := coll.Find(context.TODO(), filt, fopt)
