@@ -56,6 +56,7 @@
         <input type="checkbox" class="form-check-input" id ="bandNameExactMatch">
       </div>
       <div class="form-group">
+        <label for = "genre" class="form-label select-label">Genre</label>
         <select class="select" id="genre" multiple>
           <option value="Alternative Rock">Alternative Rock</option>
           <option value="Art Punk">Art Punk</option>
@@ -111,7 +112,6 @@
           <option value="Soul">Soul</option>
           <option value="Soundtrack">Soundtrack</option>
         </select>
-        <label for = "genre" id = "genre" class="form-label select-label">Genre</label>
       </div>
       <div class="form-group">
         <label for = "yearStart">Start Year</label>
@@ -129,12 +129,12 @@
         <label for = "entryEnd">End Date Added</label>
         <input type="entryEnd" class="form-control" id="entryEnd" placeholder="Enter Ending Date Added">
       </div>
-      <button type="button" class="btn btn-primary" onclick="console.log('click');">Submit</button>
+      <button type="button" class="btn btn-primary" onclick="asearch();">Submit</button>
     </form>
 
 
     <!--================================================== -->
-    <script src="../assets/js/submitalbum.js"></script>
+    <script src="../assets/js/queryalbums.js"></script>
 
 
   </body>

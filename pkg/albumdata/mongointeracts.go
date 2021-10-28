@@ -57,6 +57,8 @@ func (M *MongoConnect) DeleteAlbumByID(id primitive.ObjectID) (*mongo.DeleteResu
 }
 
 func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
+	// replace encoded spaces "%20" with spaces " "
+	q.DecodeSpaces()
 	//build the query as a filter via bson.M using various operators - $gt,  $or, $and
 	var albums []AlbumReadable
 	filt := bson.M{}
