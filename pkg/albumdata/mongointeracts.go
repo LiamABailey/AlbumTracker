@@ -109,7 +109,7 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 	}
 
 	coll := M.getCollection()
-	resultcurs, err := coll.Find(context.TODO(), filt, fopt)
+	resultcurs, err := coll.Find(context.TODO(), filt)
 	if err != nil {
 		return albums, err
 	}
