@@ -18,7 +18,9 @@ function asearch() {
 function getSearchQuery() {
   var qstr = [];
   var params = {'AlbumName': albumName.value,
+                'AlbumNameExactMatch': albumNameExactMatch.checked,
                 'BandName': bandName.value,
+                'BandNameExactMatch': bandNameExactMatch.checked,
                 'Genre': getSelectedGenres(genre),
                 'YearStart': yearStart.value,
                 'YearEnd': yearEnd.value,
@@ -27,10 +29,12 @@ function getSearchQuery() {
   // TODO hanlde exact match indicators
   // for all except for genre
   Object.entries(params).map(([key, val]) => {
-    if (key != 'Genre') {
+    if (key != 'Genre' && key != 'AlbumNameExactMatch' && key != 'BandNameExactMatch') {
       if (val != '') {
         qstr.push([key,'=',val.replaceAll(" ", "%20")].join(''),'&')
       }
+    } else if (key == 'AlbumNameExactMatch' || key == 'BandNameExactMatch') {
+      qstr.push([key,'=',val].join(''),'&')
     } else {
       for (var i=0; i < val.length; i++) {
         qstr.push(['Genres','=',val[i].replaceAll(" ", "%20")].join(''),'&')
