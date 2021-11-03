@@ -64,7 +64,7 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 	filt := bson.M{}
 	if q.AlbumName != "" {
 		// defaults to false
-		if q.NameExactMatch {
+		if q.AlbumNameExactMatch {
 			filt["Name"] = bson.M{"$eq": q.AlbumName}
 		} else {
 			// queried value is in name, case invariant

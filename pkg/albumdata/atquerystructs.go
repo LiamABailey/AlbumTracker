@@ -9,7 +9,7 @@ import (
 // master query struct
 type AlbumQuery struct {
   AlbumName string `json:"AlbumName"`
-	NameExactMatch bool `json:"NameExactMatch"`
+	AlbumNameExactMatch bool `json:"AlbumNameExactMatch"`
 	BandName string `json:"BandName"`
 	BandNameExactMatch bool `json:"BandNameExactMatch"`
 	Genres []string `json:"Genres"`

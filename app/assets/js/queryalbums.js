@@ -17,8 +17,8 @@ function asearch() {
 // Returns the query string, starting with "?"
 function getSearchQuery() {
   var qstr = [];
-  var params = {'Name': albumName.value,
-                'Band': bandName.value,
+  var params = {'AlbumName': albumName.value,
+                'BandName': bandName.value,
                 'Genre': getSelectedGenres(genre),
                 'YearStart': yearStart.value,
                 'YearEnd': yearEnd.value,
