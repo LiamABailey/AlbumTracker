@@ -12,8 +12,8 @@
     <!-- Bootstrap core CSS -->
     <link href="../assets/packages/bootstrap-5.0-dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <!--<link href="../assets/index.css" rel="stylesheet">-->
+    <!-- Custom styles  for the project -->
+    <link href="../assets/css/albumtrack.css" rel="stylesheet">
 
   </head>
 
@@ -30,23 +30,23 @@
     </nav>
 
     <form>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "albumName">Album Name</label>
         <input type="album-name" class="form-control" id="albumName" placeholder="Enter Album Name">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "albumNameExactMatch">Check for Exact Name Match</label>
         <input type="checkbox" class="form-check-input" id ="albumNameExactMatch">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "bandName">Band Name</label>
         <input type="band-name" class="form-control" id="bandName" placeholder="Enter Band Name">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "bandNameExactMatch">Check for Exact Band Name Match</label>
         <input type="checkbox" class="form-check-input" id ="bandNameExactMatch">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "genre" class="form-label select-label">Genre</label>
         <select class="select" id="genre" multiple>
           <option value="Alternative Rock">Alternative Rock</option>
@@ -104,23 +104,25 @@
           <option value="Soundtrack">Soundtrack</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "yearStart">Start Year</label>
         <input type="yearStart" class="form-control" id="yearStart" placeholder="Enter Starting Release Year">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "yearEnd">End Year</label>
         <input type="yearEnd" class="form-control" id="yearEnd" placeholder="Enter Ending Release Year">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "entryStart">Start Date Added</label>
         <input type="entryStart" class="form-control" id="entryStart" placeholder="Enter Starting Date Added">
       </div>
-      <div class="form-group">
+      <div class="form-group tpad5">
         <label for = "entryEnd">End Date Added</label>
         <input type="entryEnd" class="form-control" id="entryEnd" placeholder="Enter Ending Date Added">
       </div>
-      <button type="button" class="btn btn-primary" onclick="asearch();">Submit</button>
+      <div class="tpad5">
+        <button type="button" class="btn btn-primary" onclick="asearch();">Submit</button>
+      </div>
     </form>
 
 
