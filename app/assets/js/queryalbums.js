@@ -7,11 +7,37 @@ function asearch() {
   request.open('GET',qstr, true);
   request.onreadystatechange=function() {
       if(request.readyState==4) {
-        console.log(request.response)
+        let albums = JSON.parse(request.response);
+        if (albums != null) {
+          populateSearchResultTable(albums);
+        }
       }
   }
+  clearSearchResultTable();
   request.send({});
+}
 
+// clears the results in the table
+function clearSearchResultTable() {
+  var table = document.getElementById("result-table-body");
+  while (table.rows.length > 0) {
+    table.deleteRow(0);
+  }
+}
+
+// populates the results in the table
+// given an array of json response data
+function populateSearchResultTable(albums) {
+  var name_order = ["Name","Band","Genre","Year"]
+  var table = document.getElementById("result-table-body");
+  for (const albumJson of albums) {
+    let row = table.insertRow();
+    for (const name of name_order) {
+      let cell = row.insertCell();
+      let text = document.createTextNode(albumJson[name]);
+      cell.appendChild(text);
+    }
+  }
 }
 
 // Returns the query string, starting with "?"
