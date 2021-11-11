@@ -5,7 +5,8 @@ function asubmit() {
   request = new XMLHttpRequest();
   request.open('POST',posturl, true);
   request.send(body);
-
+  //reset the form
+  document.getElementById("input-form").reset()
 }
 
 function getBody() {
