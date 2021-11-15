@@ -1,9 +1,13 @@
+package spotifyintegration
+
 import (
   "crypto/rand"
   "encoding/hex"
   "github.com/gin-gonic/gin"
   "net/http"
+  "net/url"
   "os"
+  "fmt"
 )
 
 // define relevant system environment variable names
@@ -14,34 +18,45 @@ const (
 
 
 type SpotifyServer struct {
-  router *gin.engine
+  router *gin.Engine
 }
 
-func NewSpotifyServer() (*SpotifyServer, error) {
+func NewSpotifyServer() (*SpotifyServer) {
   svr := &SpotifyServer{}
   svr.router = gin.Default()
   svr.router.GET("/login", login)
   // TODO svr.router.GET("/recently-played", getRecentlyPlayed)
+  return svr
 }
 
-func (srv *SpotifyServer) Run(address string) error {
-  return srv.rounter.Run(address)
+func (svr *SpotifyServer) Run(address string) error {
+  return svr.router.Run(address)
 }
 
-func (srv *SpotifyServer) Use(hf gin.HandlerFunc) {
+func (svr *SpotifyServer) Use(hf gin.HandlerFunc) {
   svr.router.Use(hf)
 }
 
+// first component of Spotify API auth flow:
+// request authorization to access data
 func login(ctx *gin.Context) {
   const responsetype string = "code"
   const scopes string = "user-read-recently-played"
-  const pathprefix string = "https://accounts.spotify.com/authorize?"
-  var state, stateerr := generateRandomState()
+  const pathprefix string = "http://accounts.spotify.com/authorize"
+  state, stateerr := generateRandomState()
   // panic if we're unable to correctly create state
-  if staterr != nil {
-    panic(staterr)
+  if stateerr != nil {
+    panic(stateerr)
   }
-  // todo : submit the login request and redirect
+  authquery := url.Values{}
+  authquery.Set("response_type", responsetype)
+  authquery.Set("client_id", os.Getenv(CLIENTID))
+  authquery.Set("scopes", scopes)
+  authquery.Set("state", state)
+  authquery.Set("redirect_uri", os.Getenv(REDIRECTURI))
+  authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
+  fmt.Println(authlocation.RequestURI())
+  ctx.Redirect(http.StatusFound, authlocation.RequestURI())
 
 }
 
@@ -53,7 +68,7 @@ func generateRandomState() (string, error) {
   b32 := make([]byte, nbytes)
   _, err := rand.Read(b32)
   if err != nil {
-    return nil, err
+    return "", err
   }
   return hex.EncodeToString(b32), nil
 }

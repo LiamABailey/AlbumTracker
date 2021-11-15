@@ -14,12 +14,14 @@ services:
       restart: unless-stopped
       networks:
        - api-net
+
     api:
       image: albumapi:latest
       container_name: albumtrack
       hostname: albumtrack
       ports:
         - 8080:8080
+        - 8081:8081
       depends_on:
        - db
       networks:
@@ -28,6 +30,8 @@ services:
         - MONGOCONN=mongodb://albummongodb:27017
         - MONGODB=music
         - MONGOCOLLECTION=albums
+        - CLIENTID=10919655b1da452280cd078457426fd7
+        - REDIRECTURI=http://localhost:8080
 
 networks:
   api-net:
