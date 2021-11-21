@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	// wait for mogno service to start
-	time.Sleep(time.Second * 3)
+	// wait for mongo service to start
+	time.Sleep(time.Second * 1)
 	mc, _ := albumdata.NewMongoConnect()
 	// we connect to the mongo server as part of the client-build step
 	srv := albumdata.NewAPIServer(mc)
@@ -27,5 +27,4 @@ func main() {
 		spotifysrv.Run(":8081")
 		wait <- true
 	}()
-	<- wait
 }
