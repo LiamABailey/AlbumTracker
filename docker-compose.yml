@@ -2,13 +2,13 @@ version: "3.8"
 services:
     db:
       image: mongo:latest
-      container_name: albummongodb
-      hostname: albummongodb
+      container_name: albummongo
+      hostname: albummongo
       environment:
        - PUID=111
        - PGID=111
       volumes:
-       - /mongodb/database:/data/db
+       - /mongodb/database:/data/albumdb
       ports:
        - 27017:27017
       restart: unless-stopped
@@ -27,7 +27,7 @@ services:
       networks:
         - api-net
       environment:
-        - MONGOCONN=mongodb://albummongodb:27017
+        - MONGOCONN=mongodb://albummongo:27017
         - MONGODB=music
         - MONGOCOLLECTION=albums
         - CLIENTID=10919655b1da452280cd078457426fd7

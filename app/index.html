@@ -16,8 +16,8 @@
    <link href="../assets/css/albumtrack.css" rel="stylesheet">
 
   </head>
-
-  <body>
+  <script src="../assets/js/submitalbum.js"></script>
+  <body onload="acquireAccessTokens();">
 
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
       <div class="container-fluid">
@@ -106,9 +106,14 @@
       </div>
     </form>
 
+    <div id = "spotify">
+      <div class="spotify-login">
+        <a id = "login-button" class="nav-link active" aria-current="page" href="http://localhost:8081/login">Login</a>
+      </div>
+    </div>
+
 
     <!--================================================== -->
-    <script src="../assets/js/submitalbum.js"></script>
     <script src="../assets/packages/bootstrap-5.0-dist/js/bootstrap.min.js">
 
 
