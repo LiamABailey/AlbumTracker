@@ -12,6 +12,7 @@ import (
 // define relevant system environment variable names
 const (
   CLIENTID = "CLIENTID"
+  SECRETID = "SECRETID"
   REDIRECTURI = "REDIRECTURI"
 )
 
@@ -56,7 +57,15 @@ func (svr *SpotifyServer) login(ctx *gin.Context) {
 }
 
 func requestTokens(ctx *gin.Context) {
-  //TODO
+  var request SpotifyRequestTokens
+  if err:= ctx.ShouldBindJSON(&request); err != nil {
+    ctx.JSON(http.StatusBadRequest,errorResponse(err))
+    return
+  }
+  // build the query
+  authquery := url.Values{}
+  authquery.Set("client_id", os.Getenv(CLIENTID))
+  resp, err := http.Get("")
 }
 
 // generates a random hex-string (length 16)
@@ -69,4 +78,8 @@ func generateRandomState() (string, error) {
     return "", err
   }
   return hex.EncodeToString(b32), nil
+}
+
+func errorResponse(err error) gin.H {
+	return gin.H{"error": err.Error()}
 }

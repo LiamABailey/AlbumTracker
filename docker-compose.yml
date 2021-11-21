@@ -32,6 +32,7 @@ services:
         - MONGOCOLLECTION=albums
         - CLIENTID=10919655b1da452280cd078457426fd7
         - REDIRECTURI=http://localhost:8080
+        - SECRETID=${SPOTIFY_SECRET_ID}
 
 networks:
   api-net:
