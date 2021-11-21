@@ -33,5 +33,6 @@ function acquireAccessTokens() {
     var authcode = params.get('code');
     var authstate = params.get('state');
     window.location.replace(HOME);
+    console.log(authcode, authstate)
   }
 }

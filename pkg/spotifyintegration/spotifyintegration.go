@@ -15,17 +15,25 @@ const (
   REDIRECTURI = "REDIRECTURI"
 )
 
-
-func NewSpotifyServer() (*gin.Engine) {
-  rtr := gin.Default()
-  rtr.GET("/login", login)
-  return rtr
+type SpotifyServer struct {
+  router      *gin.Engine
+  laststate   string
 }
 
+func NewSpotifyServer() *SpotifyServer {
+  svr := &SpotifyServer{}
+  svr.router = gin.Default()
+  svr.router.GET("/login", svr.login)
+  return svr
+}
+
+func (svr *SpotifyServer) Run(address string) error {
+  return svr.router.Run(address)
+}
 
 // first component of Spotify API auth flow:
 // request authorization to access data
-func login(ctx *gin.Context) {
+func (svr *SpotifyServer) login(ctx *gin.Context) {
   const responsetype string = "code"
   const scopes string = "user-read-recently-played"
   const pathprefix string = "https://accounts.spotify.com/authorize"
@@ -34,6 +42,9 @@ func login(ctx *gin.Context) {
   if stateerr != nil {
     panic(stateerr)
   }
+  // track last state generated at login
+  svr.laststate = state
+  // build the query
   authquery := url.Values{}
   authquery.Set("response_type", responsetype)
   authquery.Set("client_id", os.Getenv(CLIENTID))
@@ -42,7 +53,10 @@ func login(ctx *gin.Context) {
   authquery.Set("redirect_uri", os.Getenv(REDIRECTURI))
   authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
   ctx.Redirect(http.StatusFound, authlocation.RequestURI())
+}
 
+func requestTokens(ctx *gin.Context) {
+  //TODO
 }
 
 // generates a random hex-string (length 16)
