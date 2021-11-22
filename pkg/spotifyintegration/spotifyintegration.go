@@ -7,6 +7,10 @@ import (
   "net/http"
   "net/url"
   "os"
+  "fmt"
+  "io"
+  b64 "encoding/base64"
+  "errors"
 )
 
 // define relevant system environment variable names
@@ -25,6 +29,7 @@ func NewSpotifyServer() *SpotifyServer {
   svr := &SpotifyServer{}
   svr.router = gin.Default()
   svr.router.GET("/login", svr.login)
+  svr.router.GET("/token", svr.requestTokens)
   return svr
 }
 
@@ -38,6 +43,7 @@ func (svr *SpotifyServer) login(ctx *gin.Context) {
   const responsetype string = "code"
   const scopes string = "user-read-recently-played"
   const pathprefix string = "https://accounts.spotify.com/authorize"
+  const contenttype string = "application/x-www-form-urlencoded"
   state, stateerr := generateRandomState()
   // panic if we're unable to correctly create state
   if stateerr != nil {
@@ -56,16 +62,51 @@ func (svr *SpotifyServer) login(ctx *gin.Context) {
   ctx.Redirect(http.StatusFound, authlocation.RequestURI())
 }
 
-func requestTokens(ctx *gin.Context) {
+func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
+  const granttype string = "authorization_code"
+  const contenttype string = "application/x-www-form-urlencoded"
+  const pathprefix string = "https://accounts.spotify.com/api/token"
+
   var request SpotifyRequestTokens
   if err:= ctx.ShouldBindJSON(&request); err != nil {
     ctx.JSON(http.StatusBadRequest,errorResponse(err))
     return
   }
+  // if returned state != state at login
+  if request.State != svr.laststate {
+    emessage := "Request State does not match Login State"
+    ctx.JSON(http.StatusUnauthorized, errorResponse(errors.New(emessage)))
+  }
+
   // build the query
   authquery := url.Values{}
-  authquery.Set("client_id", os.Getenv(CLIENTID))
-  resp, err := http.Get("")
+  //authquery.Set("client_id", os.Getenv(CLIENTID))
+  //authquery.Set("client_secret", os.Getenv(SECRETID))
+  authquery.Set("grant_type", granttype)
+  authquery.Set("code", request.Code)
+  authquery.Set("redirect_uri", os.Getenv(REDIRECTURI))
+  authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
+
+  client := &http.Client{}
+  req, _ := http.NewRequest("GET", authlocation.RequestURI(), nil)
+  // set the required headers
+  req.Header.Set("Content-Type", contenttype)
+  authb64 := buildAuthString(os.Getenv(CLIENTID), os.Getenv(SECRETID))
+  req.Header.Set("Authorization", authb64)
+
+  resp, _ := client.Do(req)
+  defer resp.Body.Close()
+  body, _ := io.ReadAll(resp.Body)
+  fmt.Println(body)
+
+}
+
+// format
+func buildAuthString(clientid, secretid string) string {
+  const prefix string = "Basic "
+  clientinfo := fmt.Sprintf("%s:%s",clientid, secretid)
+  clientinfoenc := b64.StdEncoding.EncodeToString([]byte(clientinfo))
+  return fmt.Sprintf("%s%s", prefix, clientinfoenc)
 }
 
 // generates a random hex-string (length 16)
