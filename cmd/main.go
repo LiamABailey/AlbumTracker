@@ -27,4 +27,5 @@ func main() {
 		spotifysrv.Run(":8081")
 		wait <- true
 	}()
+	<- wait
 }
