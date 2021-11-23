@@ -4,6 +4,7 @@ import (
   "crypto/rand"
   "encoding/hex"
   "github.com/gin-gonic/gin"
+  gincors "github.com/gin-contrib/cors"
   "net/http"
   "net/url"
   "os"
@@ -28,6 +29,8 @@ type SpotifyServer struct {
 func NewSpotifyServer() *SpotifyServer {
   svr := &SpotifyServer{}
   svr.router = gin.Default()
+  // using the cors default
+  svr.router.Use(gincors.Default())
   svr.router.GET("/login", svr.login)
   svr.router.GET("/token", svr.requestTokens)
   return svr

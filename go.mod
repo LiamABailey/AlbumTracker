@@ -3,6 +3,7 @@ module albumtrack
 go 1.16
 
 replace github.com/LiamABailey/AlbumTracker/pkg/albumdata => ./pkg/albumdata
+
 replace github.com/LiamABailey/AlbumTracker/pkg/spotifyintegration => ./pkg/spotifyintegration
 
 require (
