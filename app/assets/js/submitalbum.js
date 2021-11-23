@@ -24,15 +24,21 @@ function getBody() {
   }
 }
 
-
 function acquireAccessTokens() {
   const HOME = "http://localhost:8080/"
   const loc = window.location.href;
   if (loc != HOME){
     let params = new URLSearchParams(loc.split("?")[1]);
-    var authcode = params.get('code');
-    var authstate = params.get('state');
+    // if redirected (likely if not HOME), attempt to get code+state returned from login
+    setAuthCookie(params.get('code'),params.get('state'));
     window.location.replace(HOME);
-    console.log(authcode, authstate)
   }
+}
+
+function setAuthCookie(authcode, authstate) {
+  const d =  new Date();
+  // cookie is retained for 24 hours
+  d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+  let expiry = "expires=" + d.toUTCString();
+  document.cookie = "SpotifyAuthCode="+authcode+";SpotifyAuthState="+authstate+";"+expiry+";path=/";
 }
