@@ -1,7 +1,6 @@
 function asubmit() {
   const posturl = "http://localhost:8080/albums";
   let body = getBody();
-  console.log(getBody());
   request = new XMLHttpRequest();
   request.open('POST',posturl, true);
   request.send(body);
@@ -29,10 +28,24 @@ function acquireAccessTokens() {
   const loc = window.location.href;
   if (loc != HOME){
     let params = new URLSearchParams(loc.split("?")[1]);
-    // if redirected (likely if not HOME), attempt to get code+state returned from login
-    setAuthCookie(params.get('code'),params.get('state'));
-    window.location.replace(HOME);
+    history.pushState("","","/")
+    const tokenurl = "http://localhost:8081/token";
+    let code = params.get('code');
+    let state = params.get('state');
+    let tokendata = {
+      Code: code,
+      State: state
+    };
+    let body = JSON.stringify(tokendata);
+    console.log(body);
+    let request = new XMLHttpRequest();
+    request.open('GET',tokenurl, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(body);
+    console.log(body);
+    console.log(request.response)
   }
+
 }
 
 function setAuthCookie(authcode, authstate) {
@@ -40,5 +53,6 @@ function setAuthCookie(authcode, authstate) {
   // cookie is retained for 24 hours
   d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
   let expiry = "expires=" + d.toUTCString();
-  document.cookie = "SpotifyAuthCode="+authcode+";SpotifyAuthState="+authstate+";"+expiry+";path=/";
+  document.cookie = "SpotifyAuthCode="+authcode+"; "+expiry+"; path=/";
+  document.cookie = "SpotifyAuthState="+authstate+"; "+expiry+"; path=/";
 }

@@ -58,10 +58,13 @@ func (svr *SpotifyServer) login(ctx *gin.Context) {
   authquery := url.Values{}
   authquery.Set("response_type", responsetype)
   authquery.Set("client_id", os.Getenv(CLIENTID))
-  authquery.Set("scopes", scopes)
+  authquery.Set("scope", scopes)
   authquery.Set("state", state)
   authquery.Set("redirect_uri", os.Getenv(REDIRECTURI))
+  fmt.Println(authquery.Encode())
+  fmt.Println(scopes)
   authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
+  fmt.Println(authlocation.RequestURI())
   ctx.Redirect(http.StatusFound, authlocation.RequestURI())
 }
 
@@ -101,10 +104,9 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
   defer resp.Body.Close()
   body, _ := io.ReadAll(resp.Body)
   fmt.Println(body)
-
 }
 
-// format
+// format the authorization string
 func buildAuthString(clientid, secretid string) string {
   const prefix string = "Basic "
   clientinfo := fmt.Sprintf("%s:%s",clientid, secretid)
