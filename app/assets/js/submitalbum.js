@@ -40,6 +40,11 @@ function acquireAccessTokens() {
     let request = new XMLHttpRequest();
     request.open('POST',tokenurl, true);
     request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange=function() {
+        if(request.readyState==4) {
+          console.log(request.response)
+        }
+    }
     request.send(body);
     console.log(request.response)
   }

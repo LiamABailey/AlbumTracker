@@ -94,16 +94,17 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
   authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
 
   client := &http.Client{}
-  req, _ := http.NewRequest("GET", authlocation.RequestURI(), nil)
+  req, _ := http.NewRequest("POST", authlocation.RequestURI(), nil)
   // set the required headers
   req.Header.Set("Content-Type", contenttype)
   authb64 := buildAuthString(os.Getenv(CLIENTID), os.Getenv(SECRETID))
   req.Header.Set("Authorization", authb64)
-
+  fmt.Println(authlocation.RequestURI())
   resp, _ := client.Do(req)
   defer resp.Body.Close()
   body, _ := io.ReadAll(resp.Body)
-  fmt.Println(body)
+  //fmt.Println(body)
+  ctx.IndentedJSON(http.StatusOK, string(body))
 }
 
 // format the authorization string
