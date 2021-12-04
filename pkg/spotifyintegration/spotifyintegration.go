@@ -32,7 +32,7 @@ func NewSpotifyServer() *SpotifyServer {
   // using the cors default
   svr.router.Use(gincors.Default())
   svr.router.GET("/login", svr.login)
-  svr.router.GET("/token", svr.requestTokens)
+  svr.router.POST("/token", svr.requestTokens)
   return svr
 }
 

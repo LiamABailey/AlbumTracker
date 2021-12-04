@@ -37,12 +37,10 @@ function acquireAccessTokens() {
       State: state
     };
     let body = JSON.stringify(tokendata);
-    console.log(body);
     let request = new XMLHttpRequest();
-    request.open('GET',tokenurl, true);
+    request.open('POST',tokenurl, true);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(body);
-    console.log(body);
     console.log(request.response)
   }
 
