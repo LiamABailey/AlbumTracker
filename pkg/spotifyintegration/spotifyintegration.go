@@ -103,7 +103,6 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
   resp, _ := client.Do(req)
   defer resp.Body.Close()
   body, _ := io.ReadAll(resp.Body)
-  //fmt.Println(body)
   ctx.IndentedJSON(http.StatusOK, string(body))
 }
 

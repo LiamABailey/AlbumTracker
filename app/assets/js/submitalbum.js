@@ -23,39 +23,46 @@ function getBody() {
   }
 }
 
-function acquireAccessTokens() {
+
+function getTokensIfRedirected() {
   const HOME = "http://localhost:8080/"
   const loc = window.location.href;
   if (loc != HOME){
     let params = new URLSearchParams(loc.split("?")[1]);
     history.pushState("","","/")
-    const tokenurl = "http://localhost:8081/token";
     let code = params.get('code');
     let state = params.get('state');
-    let tokendata = {
-      Code: code,
-      State: state
-    };
-    let body = JSON.stringify(tokendata);
-    let request = new XMLHttpRequest();
-    request.open('POST',tokenurl, true);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.onreadystatechange=function() {
-        if(request.readyState==4) {
-          console.log(request.response)
-        }
-    }
-    request.send(body);
-    console.log(request.response)
+    setAccessTokens(code, state)
   }
-
 }
 
-function setAuthCookie(authcode, authstate) {
+
+// assign the access tokens to
+function setAccessTokens(code, state) {
+  const tokenurl = "http://localhost:8081/token";
+  let tokendata = {
+    Code: code,
+    State: state
+  };
+  let body = JSON.stringify(tokendata);
+  let request = new XMLHttpRequest();
+  request.open('POST',tokenurl, true);
+  request.setRequestHeader("Content-Type", "application/json");
+  request.onreadystatechange=function() {
+      if(request.readyState==4) {
+        const token_resp = JSON.parse(JSON.parse(request.response));
+        setTokenCookie(token_resp.access_token, token_resp.refresh_token, token_resp.expires_in);
+      }
+  }
+  request.send(body);
+}
+
+function setTokenCookie(token, refresh_token, expires_in) {
   const d =  new Date();
   // cookie is retained for 24 hours
-  d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
-  let expiry = "expires=" + d.toUTCString();
-  document.cookie = "SpotifyAuthCode="+authcode+"; "+expiry+"; path=/";
-  document.cookie = "SpotifyAuthState="+authstate+"; "+expiry+"; path=/";
+  d.setTime(d.getTime() + (expires_in * 1000));
+  let expiry = " expires=" + d.toUTCString() +";";
+  document.cookie = "SpotifyAccessToken="+token +";";
+  document.cookie = expiry;
+  document.cookie = "SpotifyRefreshToken="+refresh_token+";";
 }
