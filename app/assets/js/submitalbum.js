@@ -57,6 +57,26 @@ function setAccessTokens(code, state) {
   request.send(body);
 }
 
+function refreshAccessTokens() {
+  const tokenurl = "http://localhost:8081/refreshtoken";
+  let tokendata = {
+    refresh_token: document.cookie.split('SpotifyRefreshToken=')[1].split(';')[0]
+  };
+  let body = JSON.stringify(tokendata);
+  let request = new XMLHttpRequest();
+  request.open('POST',tokenurl, true);
+  request.setRequestHeader("Content-Type", "application/json");
+  request.onreadystatechange=function() {
+      if(request.readyState==4) {
+        const token_resp = JSON.parse(JSON.parse(request.response));
+        setTokenCookie(token_resp.access_token, token_resp.refresh_token, token_resp.expires_in);
+      }
+  }
+  request.send(body);
+
+}
+
+
 function setTokenCookie(token, refresh_token, expires_in) {
   const d =  new Date();
   // cookie is retained for 24 hours

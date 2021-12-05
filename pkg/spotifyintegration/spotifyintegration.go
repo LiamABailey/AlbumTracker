@@ -33,6 +33,7 @@ func NewSpotifyServer() *SpotifyServer {
   svr.router.Use(gincors.Default())
   svr.router.GET("/login", svr.login)
   svr.router.POST("/token", svr.requestTokens)
+  svr.router.POST("/refreshtoken", svr.refreshTokens)
   return svr
 }
 
@@ -73,7 +74,7 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
   const contenttype string = "application/x-www-form-urlencoded"
   const pathprefix string = "https://accounts.spotify.com/api/token"
 
-  var request SpotifyRequestTokens
+  var request SpotifyRequestTokensRequestBody
   if err:= ctx.ShouldBindJSON(&request); err != nil {
     ctx.JSON(http.StatusBadRequest,errorResponse(err))
     return
@@ -105,6 +106,38 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
   body, _ := io.ReadAll(resp.Body)
   ctx.IndentedJSON(http.StatusOK, string(body))
 }
+
+func (svr *SpotifyServer) refreshTokens(ctx *gin.Context) {
+  const granttype string = "refresh_token"
+  const contenttype string = "application/x-www-form-urlencoded"
+  const pathprefix string = "https://accounts.spotify.com/api/token"
+
+  var request SpotifyRefreshTokensRequestBody
+  if err:= ctx.ShouldBindJSON(&request); err != nil {
+    ctx.JSON(http.StatusBadRequest,errorResponse(err))
+    return
+  }
+  // build the query
+  authquery := url.Values{}
+  //authquery.Set("client_id", os.Getenv(CLIENTID))
+  //authquery.Set("client_secret", os.Getenv(SECRETID))
+  authquery.Set("grant_type", granttype)
+  authquery.Set("refresh_token", request.RefreshToken)
+  authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
+
+  client := &http.Client{}
+  req, _ := http.NewRequest("POST", authlocation.RequestURI(), nil)
+  // set the required headers
+  req.Header.Set("Content-Type", contenttype)
+  authb64 := buildAuthString(os.Getenv(CLIENTID), os.Getenv(SECRETID))
+  req.Header.Set("Authorization", authb64)
+  fmt.Println(authlocation.RequestURI())
+  resp, _ := client.Do(req)
+  defer resp.Body.Close()
+  body, _ := io.ReadAll(resp.Body)
+  ctx.IndentedJSON(http.StatusOK, string(body))
+}
+
 
 // format the authorization string
 func buildAuthString(clientid, secretid string) string {
