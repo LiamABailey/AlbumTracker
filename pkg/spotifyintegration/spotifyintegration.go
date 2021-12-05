@@ -12,6 +12,7 @@ import (
   "io"
   b64 "encoding/base64"
   "errors"
+  "strconv"
 )
 
 // define relevant system environment variable names
@@ -29,8 +30,16 @@ type SpotifyServer struct {
 func NewSpotifyServer() *SpotifyServer {
   svr := &SpotifyServer{}
   svr.router = gin.Default()
-  // using the cors default
-  svr.router.Use(gincors.Default())
+  // not using the cors default - have to support
+  // custom header
+  corsspec := gincors.New(gincors.Config{
+    AllowOrigins: []string{"http://localhost:8080","https://localhost:8080"},
+    AllowMethods: []string{"GET","POST"},
+    AllowHeaders: []string{"Authorization"},
+  })
+  svr.router.Use(corsspec)
+  //svr.router.Use(gincors.Default())
+  svr.router.GET("/lastalbums", svr.getLastAlbums)
   svr.router.GET("/login", svr.login)
   svr.router.POST("/token", svr.requestTokens)
   svr.router.POST("/refreshtoken", svr.refreshTokens)
@@ -83,6 +92,7 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
   if request.State != svr.laststate {
     emessage := "Request State does not match Login State"
     ctx.JSON(http.StatusUnauthorized, errorResponse(errors.New(emessage)))
+    return
   }
 
   // build the query
@@ -119,8 +129,6 @@ func (svr *SpotifyServer) refreshTokens(ctx *gin.Context) {
   }
   // build the query
   authquery := url.Values{}
-  //authquery.Set("client_id", os.Getenv(CLIENTID))
-  //authquery.Set("client_secret", os.Getenv(SECRETID))
   authquery.Set("grant_type", granttype)
   authquery.Set("refresh_token", request.RefreshToken)
   authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
@@ -131,13 +139,39 @@ func (svr *SpotifyServer) refreshTokens(ctx *gin.Context) {
   req.Header.Set("Content-Type", contenttype)
   authb64 := buildAuthString(os.Getenv(CLIENTID), os.Getenv(SECRETID))
   req.Header.Set("Authorization", authb64)
-  fmt.Println(authlocation.RequestURI())
   resp, _ := client.Do(req)
   defer resp.Body.Close()
   body, _ := io.ReadAll(resp.Body)
   ctx.IndentedJSON(http.StatusOK, string(body))
 }
 
+
+func (svr *SpotifyServer) getLastAlbums(ctx *gin.Context) {
+  const granttype string = "authorization_code"
+  const contenttype string = "application/x-www-form-urlencoded"
+  const pathprefix string = "https://api.spotify.com/v1/me/player/recently-played"
+
+  var request SpotifyGetAlbumsRequestQuery
+  if err:= ctx.Bind(&request); err != nil {
+    ctx.JSON(http.StatusBadRequest,errorResponse(err))
+    return
+  }
+  fmt.Println(request)
+  // build the query
+  loc := pathprefix + "?before=" + strconv.Itoa(request.Before)
+
+  client := &http.Client{}
+  req, _ := http.NewRequest("GET", loc, nil)
+  // set the required headers
+  req.Header.Set("Content-Type", contenttype)
+  req.Header.Set("Authorization", ctx.Request.Header["Authorization"][0])
+  fmt.Println(loc)
+  // submit the request
+  resp, _ := client.Do(req)
+  defer resp.Body.Close()
+  body, _ := io.ReadAll(resp.Body)
+  ctx.IndentedJSON(http.StatusOK, string(body))
+}
 
 // format the authorization string
 func buildAuthString(clientid, secretid string) string {

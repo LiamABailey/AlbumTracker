@@ -58,6 +58,33 @@ function setAccessTokens(code, state) {
   request.send(body);
 }
 
+// get up to 10 albums listened to before <before>, a unix timestamp.
+function getTenAlbums(before) {
+  // check to see if refresh is needed
+  const baseurl = 'http://localhost:8081/lastalbums'
+  if (!document.cookie.includes('SpotifyAccessToken')) {
+    refreshAccessTokens();
+  }
+  // if before is none, assign to current timestamp
+  if (before == null) {
+    before = Date.now();
+  }
+  let albumuri = baseurl + "?before=" + before;
+  let request = new XMLHttpRequest();
+  request.open('GET',albumuri ,true);
+  console.log(albumuri);
+  auth_str = "Bearer " + getCookieValue('SpotifyAccessToken');
+  request.setRequestHeader('Authorization', auth_str);
+  request.onreadystatechange=function(){
+    if(request.readyState==4) {
+      console.log(JSON.parse(request.response));
+    }
+  }
+  request.send({});
+}
+
+// refresh the access token using the
+// refresh token
 function refreshAccessTokens() {
   const tokenurl = "http://localhost:8081/refreshtoken";
   let tokendata = {
@@ -84,4 +111,11 @@ function setCookie(cookie_name, cookie_value, expires_in) {
     cookie_str += "max-age=" + expires_in +";";
   }
   document.cookie = cookie_str
+}
+
+function getCookieValue(cookie_name) {
+  key_loc = document.cookie.lastIndexOf(cookie_name);
+  start_pos = key_loc + cookie_name.length + 1;
+  end_pos = document.cookie.substring(start_pos).indexOf(';') + start_pos;
+  return document.cookie.substring(start_pos, end_pos);
 }
