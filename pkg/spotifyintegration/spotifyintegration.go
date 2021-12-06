@@ -35,7 +35,7 @@ func NewSpotifyServer() *SpotifyServer {
   corsspec := gincors.New(gincors.Config{
     AllowOrigins: []string{"http://localhost:8080","https://localhost:8080"},
     AllowMethods: []string{"GET","POST"},
-    AllowHeaders: []string{"Authorization"},
+    AllowHeaders: []string{"Authorization","content-type"},
   })
   svr.router.Use(corsspec)
   //svr.router.Use(gincors.Default())

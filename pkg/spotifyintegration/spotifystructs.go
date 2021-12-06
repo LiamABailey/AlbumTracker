@@ -15,3 +15,30 @@ type SpotifyGetAlbumsRequestQuery struct {
   Before  int     `form:"before"`
   Limit   string  `form:"limit"`
 }
+
+type SpotifyRecentlyPlayedBody struct {
+  Href  string                        `json:"href"`
+  Items []SpotifyRecentlyPlayedTrack   `json:"items"`
+  Limit int                           `json:"limit"`
+  Next  string                        `json:"next"`
+  Cursors  struct {
+    Before  int     `json:"before"`
+    After   int     `json:"after"`
+  }                                   `json:"cursors"`
+  Total int                           `json:"total"`
+}
+type SpotifyRecentlyPlayedTrack struct {
+  Track struct {
+    Album struct {
+      Artists       []SpotifyRecentlyPlayedArtist `json:"artists"`
+      Name          string                        `json:"name"`
+      ReleaseDate   string                        `json:"release_date"`
+      ReleasePercision  string                    `json:"release_date_percision"`
+    }                                                 `json:"album"`
+  }                                                       `json:"track"`
+}
+
+type SpotifyRecentlyPlayedArtist struct {
+  Name  string    `json:"name"`
+  ID    string    `json:"id"`
+}
