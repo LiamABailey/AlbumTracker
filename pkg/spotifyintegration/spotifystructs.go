@@ -27,15 +27,28 @@ type SpotifyRecentlyPlayedBody struct {
   }                                   `json:"cursors"`
 }
 
+func (body SpotifyRecentlyPlayedBody) GetUniqueAlbums() map[string]SpotifyAlbum {
+  // create a dict of ID: SpotifyAlbum
+  albums := make(map[string]SpotifyAlbum)
+  for _, track := range body.Albums {
+    // because IDs are unique, we can re-assign
+    albums[track.Album.ID] = track.Album
+  }
+  return albums
+}
+
 type SpotifyRecentlyPlayedTrack struct {
   Track struct {
-    Album struct {
-      Artists       []SpotifyRecentlyPlayedArtist `json:"artists"`
-      Name          string                        `json:"name"`
-      ReleaseDate   string                        `json:"release_date"`
-      ReleasePercision  string                    `json:"release_date_percision"`
-    }                                                 `json:"album"`
-  }                                                       `json:"track"`
+    Album SpotifyAlbum         `json:"album"`
+  }                            `json:"track"`
+}
+
+type SpotifyAlbum struct {
+  Artists       []SpotifyRecentlyPlayedArtist `json:"artists"`
+  Name          string                        `json:"name"`
+  ReleaseDate   string                        `json:"release_date"`
+  ReleasePercision  string                    `json:"release_date_percision"`
+  ID            string                        `json:"id"`
 }
 
 type SpotifyRecentlyPlayedArtist struct {
