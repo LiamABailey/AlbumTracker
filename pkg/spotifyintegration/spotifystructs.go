@@ -22,11 +22,11 @@ type SpotifyRecentlyPlayedBody struct {
   Limit int                           `json:"limit"`
   Next  string                        `json:"next"`
   Cursors  struct {
-    Before  int     `json:"before"`
-    After   int     `json:"after"`
+    Before  string  `json:"before"`
+    After   string  `json:"after"`
   }                                   `json:"cursors"`
-  Total int                           `json:"total"`
 }
+
 type SpotifyRecentlyPlayedTrack struct {
   Track struct {
     Album struct {

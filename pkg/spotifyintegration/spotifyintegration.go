@@ -11,6 +11,7 @@ import (
   "fmt"
   "io"
   b64 "encoding/base64"
+  "encoding/json"
   "errors"
   "strconv"
 )
@@ -71,10 +72,7 @@ func (svr *SpotifyServer) login(ctx *gin.Context) {
   authquery.Set("scope", scopes)
   authquery.Set("state", state)
   authquery.Set("redirect_uri", os.Getenv(REDIRECTURI))
-  fmt.Println(authquery.Encode())
-  fmt.Println(scopes)
   authlocation := url.URL{Path: pathprefix, RawQuery: authquery.Encode()}
-  fmt.Println(authlocation.RequestURI())
   ctx.Redirect(http.StatusFound, authlocation.RequestURI())
 }
 
@@ -97,8 +95,6 @@ func (svr *SpotifyServer) requestTokens(ctx *gin.Context) {
 
   // build the query
   authquery := url.Values{}
-  //authquery.Set("client_id", os.Getenv(CLIENTID))
-  //authquery.Set("client_secret", os.Getenv(SECRETID))
   authquery.Set("grant_type", granttype)
   authquery.Set("code", request.Code)
   authquery.Set("redirect_uri", os.Getenv(REDIRECTURI))
@@ -169,8 +165,12 @@ func (svr *SpotifyServer) getLastAlbums(ctx *gin.Context) {
   // submit the request
   resp, _ := client.Do(req)
   defer resp.Body.Close()
+  // collect the body data
   body, _ := io.ReadAll(resp.Body)
-  ctx.IndentedJSON(http.StatusOK, string(body))
+  var albumdata SpotifyRecentlyPlayedBody
+  _ := json.Unmarshal(body, &albumdata)
+  // as validation, reutrn the unmarshaled data
+  ctx.IndentedJSON(http.StatusOK, fmt.Sprintf("%+v", albumdata))
 }
 
 // format the authorization string
