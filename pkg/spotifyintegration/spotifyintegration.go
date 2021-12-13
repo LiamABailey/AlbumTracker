@@ -168,9 +168,11 @@ func (svr *SpotifyServer) getLastAlbums(ctx *gin.Context) {
   // collect the body data
   body, _ := io.ReadAll(resp.Body)
   var albumdata SpotifyRecentlyPlayedBody
-  _ := json.Unmarshal(body, &albumdata)
+  json.Unmarshal(body, &albumdata)
+  //fmt.Println(body)
+  fmt.Println(albumdata.GetUniqueAlbums())
   // as validation, reutrn the unmarshaled data
-  ctx.IndentedJSON(http.StatusOK, fmt.Sprintf("%+v", albumdata))
+  ctx.IndentedJSON(http.StatusOK, fmt.Sprintf("%+v", albumdata.GetUniqueAlbums()))
 }
 
 // format the authorization string
