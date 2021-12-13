@@ -31,15 +31,12 @@ type SpotifyServer struct {
 func NewSpotifyServer() *SpotifyServer {
   svr := &SpotifyServer{}
   svr.router = gin.Default()
-  // not using the cors default - have to support
-  // custom header
   corsspec := gincors.New(gincors.Config{
     AllowOrigins: []string{"http://localhost:8080","https://localhost:8080"},
     AllowMethods: []string{"GET","POST"},
     AllowHeaders: []string{"Authorization","content-type"},
   })
   svr.router.Use(corsspec)
-  //svr.router.Use(gincors.Default())
   svr.router.GET("/lastalbums", svr.getLastAlbums)
   svr.router.GET("/login", svr.login)
   svr.router.POST("/token", svr.requestTokens)
