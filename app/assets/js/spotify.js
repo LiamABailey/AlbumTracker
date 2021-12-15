@@ -44,7 +44,7 @@ function getTenAlbums(before) {
   if (before == null) {
     before = Date.now();
   }
-  let albumuri = baseurl + "?before=" + before;
+  let albumuri = baseurl + "?before=" + before +"&limit=10";
   let request = new XMLHttpRequest();
   request.open('GET',albumuri ,true);
   console.log(albumuri);

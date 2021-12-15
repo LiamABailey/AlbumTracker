@@ -14,6 +14,7 @@ import (
   "encoding/json"
   "errors"
   "strconv"
+  "time"
 )
 
 // define relevant system environment variable names
@@ -144,32 +145,53 @@ func (svr *SpotifyServer) getLastAlbums(ctx *gin.Context) {
   const contenttype string = "application/x-www-form-urlencoded"
   const pathprefix string = "https://api.spotify.com/v1/me/player/recently-played"
 
+  // make repeated calls to the endpoint until we have
+  // filled our map
+  albums := make(map[string]SpotifyAlbumTrackInfo)
+  var iter int
   var request SpotifyGetAlbumsRequestQuery
+  // make multiple requests until 10 albums have been gathered
   if err:= ctx.Bind(&request); err != nil {
     ctx.JSON(http.StatusBadRequest,errorResponse(err))
     return
   }
-  fmt.Println(request)
-  // build the query
-  loc := pathprefix + "?before=" + strconv.Itoa(request.Before)
-
-  client := &http.Client{}
-  req, _ := http.NewRequest("GET", loc, nil)
-  // set the required headers
-  req.Header.Set("Content-Type", contenttype)
-  req.Header.Set("Authorization", ctx.Request.Header["Authorization"][0])
-  fmt.Println(loc)
-  // submit the request
-  resp, _ := client.Do(req)
-  defer resp.Body.Close()
-  // collect the body data
-  body, _ := io.ReadAll(resp.Body)
-  var albumdata SpotifyRecentlyPlayedBody
-  json.Unmarshal(body, &albumdata)
-  //fmt.Println(body)
-  fmt.Println(albumdata.GetUniqueAlbums())
+  before :=  strconv.Itoa(request.Before)
+  lim, _ := strconv.Atoi(request.Limit)
+  nonemptyresponse := true
+  for (len(albums) < lim) && (iter < 5) && nonemptyresponse {
+    // build the query
+    loc := pathprefix + "?before=" + before
+    client := &http.Client{}
+    req, _ := http.NewRequest("GET", loc, nil)
+    // set the required headers
+    req.Header.Set("Content-Type", contenttype)
+    req.Header.Set("Authorization", ctx.Request.Header["Authorization"][0])
+    fmt.Println(loc)
+    // submit the request
+    resp, _ := client.Do(req)
+    // collect the body data
+    body, _ := io.ReadAll(resp.Body)
+    var albumdata SpotifyRecentlyPlayedBody
+    json.Unmarshal(body, &albumdata)
+    playedalbums := albumdata.GetUniqueAlbums()
+    if len(playedalbums) == 0 {
+      nonemptyresponse = false
+    } else {
+      // collect the results
+      for id, album := range playedalbums {
+        albums[id] = album
+      }
+    }
+    fmt.Println(playedalbums)
+    before = albumdata.Cursors.Before
+    iter++
+    resp.Body.Close()
+    // wait 1 second before next request
+    time.Sleep(1 * time.Second)
+  }
+  // TODO trim to length if above lim.
   // as validation, reutrn the unmarshaled data
-  ctx.IndentedJSON(http.StatusOK, fmt.Sprintf("%+v", albumdata.GetUniqueAlbums()))
+  ctx.IndentedJSON(http.StatusOK, fmt.Sprintf("%+v", albums))
 }
 
 // format the authorization string
