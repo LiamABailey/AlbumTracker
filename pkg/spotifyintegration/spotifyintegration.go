@@ -3,6 +3,8 @@ package spotifyintegration
 import (
   "crypto/rand"
   "encoding/hex"
+  b64 "encoding/base64"
+  "encoding/json"
   "github.com/gin-gonic/gin"
   gincors "github.com/gin-contrib/cors"
   "net/http"
@@ -10,8 +12,6 @@ import (
   "os"
   "fmt"
   "io"
-  b64 "encoding/base64"
-  "encoding/json"
   "errors"
   "strconv"
   "time"
@@ -191,7 +191,12 @@ func (svr *SpotifyServer) getLastAlbums(ctx *gin.Context) {
   }
   // TODO trim to length if above lim.
   // as validation, reutrn the unmarshaled data
-  ctx.IndentedJSON(http.StatusOK, fmt.Sprintf("%+v", albums))
+  entries := make([]SpotifyAlbumTrackInfo, 0, len(albums))
+  for _, album := range albums {
+    entries = append(entries, album)
+  }
+  marshalledalbums, _ := json.Marshal(entries)
+  ctx.IndentedJSON(http.StatusOK, string(marshalledalbums))
 }
 
 // format the authorization string

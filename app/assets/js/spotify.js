@@ -34,7 +34,7 @@ function setAccessTokens(code, state) {
 }
 
 // get up to 10 albums listened to before <before>, a unix timestamp.
-function getTenAlbums(before) {
+function getTenAlbums(before, callback) {
   // check to see if refresh is needed
   const baseurl = 'http://localhost:8081/lastalbums'
   if (!document.cookie.includes('SpotifyAccessToken')) {
@@ -47,15 +47,21 @@ function getTenAlbums(before) {
   let albumuri = baseurl + "?before=" + before +"&limit=10";
   let request = new XMLHttpRequest();
   request.open('GET',albumuri ,true);
-  console.log(albumuri);
   auth_str = "Bearer " + getCookieValue('SpotifyAccessToken');
   request.setRequestHeader('Authorization', auth_str);
-  request.onreadystatechange=function(){
+  request.onreadystatechange= function(){
     if(request.readyState==4) {
-      console.log(JSON.parse(request.response));
+      callback(request.response);
     }
   }
   request.send({});
+}
+
+
+function applyAlbumData(response) {
+  let albums = JSON.parse(JSON.parse(response));
+  clearSearchResultTable();
+  populateSearchResultTable(albums.values());
 }
 
 // refresh the access token using the
@@ -93,4 +99,26 @@ function getCookieValue(cookie_name) {
   start_pos = key_loc + cookie_name.length + 1;
   end_pos = document.cookie.substring(start_pos).indexOf(';') + start_pos;
   return document.cookie.substring(start_pos, end_pos);
+}
+
+
+function populateSearchResultTable(albums) {
+  var name_order = ["name","artists","release_date"]
+  var table = document.getElementById("album-table-body");
+  for (const albumJson of albums) {
+    let row = table.insertRow();
+    for (const name of name_order) {
+      let cell = row.insertCell();
+      let text = document.createTextNode(albumJson[name]);
+      cell.appendChild(text);
+    }
+  }
+}
+
+// clear the spotify table rows
+function clearSearchResultTable() {
+  var table = document.getElementById("album-table-body");
+  while (table.rows.length > 0) {
+    table.deleteRow(0);
+  }
 }
