@@ -13,7 +13,7 @@ services:
        - PUID=111
        - PGID=111
       volumes:
-       - album_data:/data/albumdb
+       - album_data:/data/db
       ports:
        - 27017:27017
       restart: unless-stopped

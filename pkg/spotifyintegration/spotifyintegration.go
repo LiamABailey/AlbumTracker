@@ -199,6 +199,10 @@ func (svr *SpotifyServer) getLastAlbums(ctx *gin.Context) {
 	sort.Slice(entries, func(i, j int) bool {
 		return entries[i].Name < entries[j].Name
 	})
+  // apply limit
+  if len(entries) > lim {
+    entries = entries[0:lim+1]
+  }
 	marshalledalbums, _ := json.Marshal(entries)
 	ctx.IndentedJSON(http.StatusOK, string(marshalledalbums))
 }
