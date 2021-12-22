@@ -14,14 +14,14 @@ type APIServer struct {
 func NewAPIServer(mc *MongoConnect) *APIServer {
 	svr := &APIServer{connector: mc}
 	svr.router = gin.Default()
-	svr.router.POST("/albums",svr.addAlbum)
-	svr.router.GET("/albums/search",svr.searchAlbums)
-	svr.router.DELETE("/albums",svr.deleteAlbumByID)
+	svr.router.POST("/albums", svr.addAlbum)
+	svr.router.GET("/albums/search", svr.searchAlbums)
+	svr.router.DELETE("/albums", svr.deleteAlbumByID)
 	return svr
 }
 
 func (svr *APIServer) Run(address string) error {
-  return svr.router.Run(address)
+	return svr.router.Run(address)
 }
 
 func (svr *APIServer) Use(hf gin.HandlerFunc) {
