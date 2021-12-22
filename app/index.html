@@ -16,8 +16,9 @@
    <link href="../assets/css/albumtrack.css" rel="stylesheet">
 
   </head>
-
-  <body>
+  <script src="../assets/js/submitalbum.js"></script>
+  <script src="../assets/js/spotify.js"></script>
+  <body onload="getTokensIfRedirected();">
 
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
       <div class="container-fluid">
@@ -106,9 +107,30 @@
       </div>
     </form>
 
+    <div id = "spotify">
+      <div class="spotify-login lrpad5">
+        <button onclick="window.location.href='http://localhost:8081/login'" class="btn btn-secondary">Spotify Login</button>
+      </div>
+      <div class="spotify-albums lrpad5">
+        <button onclick="getTenAlbums(null, applyAlbumData);" class ="btn btn-secondary">Get Albums</button>
+      </div>
+    </div>
+
+    <div class = "lrpad5">
+    <table class="table" id = "spotify-albums">
+      <thead>
+        <tr>
+          <th scope = "col">Album Name</th>
+          <th scope = "col">Band Name</th>
+          <th scope = "col">Release Year</th>
+        </tr>
+      </thead>
+      <tbody id="album-table-body">
+      </tbody>
+    </table>
+
 
     <!--================================================== -->
-    <script src="../assets/js/submitalbum.js"></script>
     <script src="../assets/packages/bootstrap-5.0-dist/js/bootstrap.min.js">
 
 

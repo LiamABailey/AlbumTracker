@@ -14,21 +14,21 @@ type APIServer struct {
 func NewAPIServer(mc *MongoConnect) *APIServer {
 	svr := &APIServer{connector: mc}
 	svr.router = gin.Default()
-	svr.router.POST("/albums",svr.addAlbum)
-	svr.router.GET("/albums/search",svr.searchAlbums)
-	svr.router.DELETE("/albums",svr.deleteAlbumByID)
+	svr.router.POST("/albums", svr.addAlbum)
+	svr.router.GET("/albums/search", svr.searchAlbums)
+	svr.router.DELETE("/albums", svr.deleteAlbumByID)
 	return svr
 }
 
-func (srv *APIServer) Run(address string) error {
-  return srv.router.Run(address)
+func (svr *APIServer) Run(address string) error {
+	return svr.router.Run(address)
 }
 
-func (srv *APIServer) Use(hf gin.HandlerFunc) {
-	srv.router.Use(hf)
+func (svr *APIServer) Use(hf gin.HandlerFunc) {
+	svr.router.Use(hf)
 }
 
-func (srv *APIServer) addAlbum(ctx *gin.Context) {
+func (svr *APIServer) addAlbum(ctx *gin.Context) {
 	var album AlbumWritable
 	// bind the json body into the AlbumWritable
 	if err := ctx.ShouldBindJSON(&album); err != nil {
@@ -38,7 +38,7 @@ func (srv *APIServer) addAlbum(ctx *gin.Context) {
 	// set the date created
 	album.SetDateAdded()
 	/// attempt to write to Mongo
-	if err := srv.connector.AddAlbum(album); err != nil {
+	if err := svr.connector.AddAlbum(album); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -46,11 +46,11 @@ func (srv *APIServer) addAlbum(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, "Album Posted")
 }
 
-func (srv *APIServer) deleteAlbumByID(ctx *gin.Context) {
+func (svr *APIServer) deleteAlbumByID(ctx *gin.Context) {
 	// get the "id" from the context
 	id, _ := idFromContext(ctx)
 	// attempt to delete from Mongo
-	dr, err := srv.connector.DeleteAlbumByID(id)
+	dr, err := svr.connector.DeleteAlbumByID(id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -58,14 +58,14 @@ func (srv *APIServer) deleteAlbumByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dr)
 }
 
-func (srv *APIServer) searchAlbums(ctx *gin.Context) {
+func (svr *APIServer) searchAlbums(ctx *gin.Context) {
 	var aquery AlbumQuery
 	if err := ctx.Bind(&aquery); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	// attempt to perform the search
-	queryres, err := srv.connector.SearchAlbums(aquery)
+	queryres, err := svr.connector.SearchAlbums(aquery)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

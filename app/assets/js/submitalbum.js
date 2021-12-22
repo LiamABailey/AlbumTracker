@@ -1,7 +1,6 @@
 function asubmit() {
   const posturl = "http://localhost:8080/albums";
-  body = getBody();
-  console.log(getBody());
+  let body = getBody();
   request = new XMLHttpRequest();
   request.open('POST',posturl, true);
   request.send(body);
@@ -12,7 +11,7 @@ function asubmit() {
 function getBody() {
   // check for all values populated
   if ((albumName.value != '') && (bandName.value != '') && (genre.value != '') && (year.value != '')) {
-    postdata = {
+    let postdata = {
       Name: albumName.value,
       Band: bandName.value,
       Genre: genre.value,

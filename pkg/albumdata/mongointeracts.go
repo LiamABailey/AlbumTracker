@@ -68,7 +68,7 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 			filt["Name"] = bson.M{"$eq": q.AlbumName}
 		} else {
 			// queried value is in name, case invariant
-			filt["Name"] = bson.M{"$regex": q.AlbumName, "$options":"i"}
+			filt["Name"] = bson.M{"$regex": q.AlbumName, "$options": "i"}
 		}
 	}
 
@@ -78,7 +78,7 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 			filt["Band"] = bson.M{"$eq": q.BandName}
 		} else {
 			// queried value is in name, case invariant
-			filt["Band"] = bson.M{"$regex": q.BandName, "$options":"i"}
+			filt["Band"] = bson.M{"$regex": q.BandName, "$options": "i"}
 		}
 	}
 
@@ -88,25 +88,25 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 	}
 	// support Year range via two parameters
 	if q.YearStart != 0 {
-		filt["Year"] = bson.M{"$gte":q.YearStart}
+		filt["Year"] = bson.M{"$gte": q.YearStart}
 	}
 	if q.YearEnd != 0 {
 		if q.YearStart != 0 {
-			filt["Year"] = bson.M{"$gte":q.YearStart,"$lte":q.YearEnd}
+			filt["Year"] = bson.M{"$gte": q.YearStart, "$lte": q.YearEnd}
 		} else {
-			filt["Year"] = bson.M{"$lte":q.YearEnd}
+			filt["Year"] = bson.M{"$lte": q.YearEnd}
 		}
 
 	}
 	// support date added range via two parametersPer
 	if !(q.DateAddedStart.IsZero()) {
-		filt["DateAdded"] = bson.M{"$gte":q.DateAddedStart}
+		filt["DateAdded"] = bson.M{"$gte": q.DateAddedStart}
 	}
 	if !(q.DateAddedEnd.IsZero()) {
 		if !(q.DateAddedStart.IsZero()) {
-			filt["DateAdded"] = bson.M{"$lte":q.DateAddedEnd,"$gte":q.DateAddedStart}
+			filt["DateAdded"] = bson.M{"$lte": q.DateAddedEnd, "$gte": q.DateAddedStart}
 		} else {
-			filt["DateAdded"] = bson.M{"$lte":q.DateAddedEnd}
+			filt["DateAdded"] = bson.M{"$lte": q.DateAddedEnd}
 		}
 	}
 
@@ -115,7 +115,7 @@ func (M *MongoConnect) SearchAlbums(q AlbumQuery) ([]AlbumReadable, error) {
 	if err != nil {
 		return albums, err
 	}
- 	defer resultcurs.Close(context.TODO())
+	defer resultcurs.Close(context.TODO())
 	// Decode each abum
 	for resultcurs.Next(context.TODO()) {
 		var album AlbumReadable
