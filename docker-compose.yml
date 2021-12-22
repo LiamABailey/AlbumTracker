@@ -1,4 +1,9 @@
 version: "3.8"
+
+volumes:
+  album_data:
+    name: albumdb
+
 services:
     db:
       image: mongo:latest
@@ -8,7 +13,7 @@ services:
        - PUID=111
        - PGID=111
       volumes:
-       - /mongodb/database:/data/albumdb
+       - album_data:/data/albumdb
       ports:
        - 27017:27017
       restart: unless-stopped

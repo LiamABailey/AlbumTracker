@@ -24,3 +24,4 @@ A simple UI, built in HTML/CSS, supports submitting new records & querying exist
   - Expose existing functionality to get albums played before a given date
   - Sort by `played_at` (currently by album name)
 - Improvement to genre system (Read from DB, allow user to extend)
+- Code base restructuring
