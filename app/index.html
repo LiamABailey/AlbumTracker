@@ -108,8 +108,11 @@
     </form>
 
     <div id = "spotify">
-      <div class="spotify-login">
-        <a id = "login-button" class="nav-link active" aria-current="page" href="http://localhost:8081/login">Login</a>
+      <div class="spotify-login lrpad5">
+        <button onclick="window.location.href='http://localhost:8081/login'" class="btn btn-secondary">Spotify Login</button>
+      </div>
+      <div class="spotify-albums lrpad5">
+        <button onclick="getTenAlbums(null, applyAlbumData);" class ="btn btn-secondary">Get Albums</button>
       </div>
     </div>
 
