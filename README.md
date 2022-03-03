@@ -4,8 +4,18 @@
 
 I listen to a variety of albums on a lot of different platforms (Spotify, YouTube, BandCamp, Soundcloud, and physical media), and often struggle to keep track of what I've listened to, especially when I can remember *aspects* of a song or album, but not the title. Consequently, I'm building an album tracker, leveraging a manual web interface to input information, and presenting the data in a query-able manner for later search on a separate web interface.
 
-To ease data entry, a Spotify integration is being built to present data on recently listened albums (leveraging the song-level `recently_played` endpoint & aggregating to the album level). Given that 75%+ of my music listening happens on Spotify, this represents a dramatic efficiency - I don't have to remember what I was listening to last, how to spell an artist or album name, or look up the release year.
+To ease data entry, a Spotify integration is used to present data on recently listened albums (leveraging the song-level `recently_played` endpoint & aggregating to the album level). Given that 75%+ of my music listening happens on Spotify, this represents a dramatic efficiency - I don't have to remember what I was listening to last, how to spell an artist or album name, or look up the release year.
 
+## UX
+
+![Add Albums Page](README/add_page.png)
+The *Add* page of the application supports submission of new albums to the tracker. A Spotify integration supports retrieval of recently-listened albums.
+
+![Returned Albums from Spotify](README/spotify_returned_albums.png)
+Using the Spotify API, the last ten albums played are returned.
+
+![Search Page](README/search_page.png)
+On the *Search* Page, stored information can be queried by Album Name, Band Name, Release Year, Genre, and Date Added to the tracker.
 
 ## Internals
 ### Go-based API
@@ -18,7 +28,6 @@ Data is stored via MongoDB, and is persisted across container lifetimes.
 A simple UI, built in HTML/CSS, supports submitting new records & querying existing records. JavaScript is used to interact with the API and manage some authorization components.
 
 ## TODO
-- Clean up UI
 - Recently played:
   - Button to move row of album data into form
   - Expose existing functionality to get albums played before a given date
