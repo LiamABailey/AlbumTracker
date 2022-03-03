@@ -23,3 +23,7 @@
 .column-1quarter {
   flex: 1 1 auto;
 }
+
+#input-form {
+  margin-bottom: 0;
+}

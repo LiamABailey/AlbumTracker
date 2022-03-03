@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en"><head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,7 +31,7 @@
       </div>
     </nav>
 
-    <form id="input-form">
+    <form class="input-form">
       <div class="form-group tpad5 lrpad5">
         <label for = "albumName">Album Name</label>
         <input type="album-name" class="form-control" id="albumName" placeholder="Enter Album Name">
@@ -107,11 +108,11 @@
       </div>
     </form>
 
-    <div id = "spotify">
+    <div id = "spotify" class = "tpad5">
       <div class="spotify-login lrpad5">
         <button onclick="window.location.href='http://localhost:8081/login'" class="btn btn-secondary">Spotify Login</button>
       </div>
-      <div class="spotify-albums lrpad5">
+      <div class="spotify-albums tpad5 lrpad5">
         <button onclick="getTenAlbums(null, applyAlbumData);" class ="btn btn-secondary">Get Albums</button>
       </div>
     </div>
